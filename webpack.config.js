@@ -23,7 +23,7 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'React App',
-            template: './public/index.html',
+            template: path.resolve(__dirname, './public', 'index.html'),
           }),
         new StatoscopePlugin({
             saveStatsTo: 'stats.json',
@@ -52,6 +52,7 @@ const config = {
                 test: /\.js$/i,
                 use: {
                   loader: 'babel-loader',
+                  exclude: /node_modules/,
                   options: {
                     presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic'}]],
                     plugins: ['lodash']
