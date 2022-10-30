@@ -3,14 +3,31 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StatoscopePlugin = require('@statoscope/webpack-plugin').default;
 
 const config = {
+    resolve: {
+        extensions: ['.js', 'json'],
+        fallback: {
+          'buffer': require.resolve('buffer'),
+          
+          'stream': false,
+        },
+        alias: {
+          'crypto-brwserify$': path.resolve(__dirname, 'src/crypto-fallback.ts'),
+        },
+      },
+
     entry: {
-        about: './src/pages/About.js',
-        home: './src/pages/Home.js',
+        main: {
+            import: './src/index.js'
+        },
     },
     plugins: [
-        new HtmlWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            title: 'React App',
+            template: './public/index.html',
+          }),
         new StatoscopePlugin({
             saveStatsTo: 'stats.json',
+            saveReportTo: 'report.html',
             saveOnlyStats: false,
             open: false,
         }),
@@ -18,18 +35,58 @@ const config = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].js',
+        publicPath: 'auto',
     },
+    mode : 'producton',
     module: {
         rules: [
-            // @TODO js rule
-            // @TODO css rule
+            {
+                test: /\.css$/i,
+                use:
+                  [
+                    'style-loader',
+                    'css-loader',
+                  ]
+            },
+            {
+                test: /\.js$/i,
+                use: {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic'}]],
+                    plugins: ['lodash']
+                  },
+                },
+            }
         ],
     },
-    // @TODO optimizations
-    // @TODO lodash treeshaking
-    // @TODO chunk for lodash
-    // @TODO chunk for runtime
-    // @TODO fallback for crypto
+    resolve: {
+        extentions: ['.js', '.json']
+    },
+    optimization: {
+        minimize: true,
+        splitChunks: {
+            minChunks: true,
+
+            chunks: 'all',
+            minSize: 0,
+        },
+        usedExports:true,
+        removeAvailableModules: true,
+        runtimeChunk: 'single',
+        concatenateModules: true,
+        moduleIds: 'deterministic',
+    },
+    devServer: {
+        static: {
+          directory: path.join(__dirname, 'public'),
+        },
+        hot: true,
+        port: 9000,
+        open: true
+    },
+    devtool: 'inline-source-map',
+    
 };
 
 module.exports = config;
