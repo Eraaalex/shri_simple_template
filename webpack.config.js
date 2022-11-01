@@ -47,7 +47,7 @@ const config = {
                   ]
             },
             {
-                test: /\.(js|jsx)$/i,
+                test: /\.(js|jsx)$/,
                 loader: 'babel-loader',
                 options: {
                   presets: [
