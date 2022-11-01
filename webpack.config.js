@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StatoscopePlugin = require('@statoscope/webpack-plugin').default;
-
+const LodashWebPackPlugin = require('lodash-webpack-plugin');
 const config = {
     resolve: {
         extensions: ['.js', 'json'],
@@ -20,6 +20,7 @@ const config = {
             import: './src/index.js'
         },
     },
+    
     plugins: [
         new HtmlWebpackPlugin({
             title: 'React App',
@@ -31,13 +32,12 @@ const config = {
             saveOnlyStats: false,
             open: false,
         }),
+        new LodashWebPackPlugin(),
     ],
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].js',
-        publicPath: 'auto',
     },
-    mode : 'producton',
     module: {
         rules: [
             {
@@ -49,28 +49,27 @@ const config = {
                   ]
             },
             {
-                test: /\.js$/i,
-                use: {
-                  loader: 'babel-loader',
-                  exclude: /node_modules/,
-                  options: {
-                    presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic'}]],
-                    plugins: ['lodash']
-                  },
+                test: /\.(js|jsx)$/i,
+                loader: 'babel-loader',
+                options: {
+                  presets: [
+                    '@babel/preset-env',
+                    ['@babel/preset-react', { runtime: 'automatic' }],
+                  ],
+                  plugins: ['lodash'],
                 },
+                exclude: /node_modules/,
+                resolve: { extensions: ['.js', '.jsx'] },
             }
         ],
-    },
-    resolve: {
-        extentions: ['.js', '.json']
     },
     optimization: {
         minimize: true,
         splitChunks: {
-            minChunks: true,
+            minChunks: 1,
 
             chunks: 'all',
-            minSize: 0,
+            minSize: 100,
         },
         usedExports:true,
         removeAvailableModules: true,
@@ -79,12 +78,11 @@ const config = {
         moduleIds: 'deterministic',
     },
     devServer: {
-        static: {
-          directory: path.join(__dirname, 'public'),
-        },
-        hot: true,
-        port: 9000,
-        open: true
+      contentBase: path.join(__dirname, 'dist'),
+      compress: true,
+      open: true,
+      hot: true,
+      port: 9000,
     },
     devtool: 'inline-source-map',
     
