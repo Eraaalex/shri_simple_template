@@ -19,7 +19,7 @@
         "start": "webpack serve",
         "build": "webpack --mode=production --config ./webpack.config.js",
         "test": "",
-        "lint:js": "npx eslint **/*.js --fix",
+        "lint:js": "eslint \"**/*.js\" --fix",
         "lint:css": "npx stylelint **/*.css --fix",
         "analyze": "statoscope generate path/to/stats.json path/to/report.html -o",
         "validate": "statoscope validate -i stats.json --config=./statoscope.config.js",
