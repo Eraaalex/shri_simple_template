@@ -7,20 +7,18 @@ const config = {
         extensions: ['.js', 'json'],
         fallback: {
           'buffer': require.resolve('buffer'),
-          
           'stream': false,
         },
         alias: {
-          'crypto-brwserify$': path.resolve(__dirname, 'src/crypto-fallback.ts'),
+          'crypto-browserify$': path.resolve(__dirname, 'src/crypto-fallback.ts'),
         },
       },
-
     entry: {
         main: {
             import: './src/index.js'
         },
     },
-    
+
     plugins: [
         new HtmlWebpackPlugin({
             title: 'React App',
@@ -49,7 +47,7 @@ const config = {
                   ]
             },
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(js|jsx)$/i,
                 loader: 'babel-loader',
                 options: {
                   presets: [
@@ -67,7 +65,6 @@ const config = {
         minimize: true,
         splitChunks: {
             minChunks: 1,
-
             chunks: 'all',
             minSize: 100,
         },
@@ -85,7 +82,5 @@ const config = {
       port: 9000,
     },
     devtool: 'inline-source-map',
-    
 };
-
 module.exports = config;
